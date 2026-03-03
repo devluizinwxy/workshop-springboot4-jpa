@@ -1,5 +1,6 @@
 package com.educandoweb.demo.entities;
 
+import com.educandoweb.demo.entities.enums.OrderStatus;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -11,8 +12,19 @@ public class Order implements Serializable {
     private static final long serialVersionUID = 1l;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private Instant moment;
+   private Integer orderStatus;
+
+    public OrderStatus getOrderStatus() {
+        return OrderStatus.valueOf(orderStatus);
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        if (orderStatus == null) throw new IllegalArgumentException("INVALID NULL");
+        this.orderStatus = orderStatus.getCode();
+    }
+
     @ManyToOne
     @JoinColumn(name = "client_id")
     private User client;
@@ -20,17 +32,18 @@ public class Order implements Serializable {
     public Order() {
     }
 
-    public Order(long id, Instant moment, User client) {
+    public Order(Long id, Instant moment,OrderStatus orderStatus, User client) {
         this.id = id;
         this.moment = moment;
+        setOrderStatus(orderStatus);
         this.client = client;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
