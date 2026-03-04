@@ -1,10 +1,17 @@
 package com.educandoweb.demo.entities;
 
+import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-public class Product {
+@Entity
+@Table(name = "tb_product")
+public class Product implements Serializable {
+    private static final long serialVersionUID = 1l;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String Description;

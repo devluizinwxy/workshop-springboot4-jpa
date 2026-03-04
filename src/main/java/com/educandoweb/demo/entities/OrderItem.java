@@ -1,6 +1,9 @@
 package com.educandoweb.demo.entities;
 
-public class OrderItem {
+import java.io.Serializable;
+
+public class OrderItem implements Serializable {
+    private static final long serialVersionUID = 1l;
     private Integer quantity;
     private Double price;
 
