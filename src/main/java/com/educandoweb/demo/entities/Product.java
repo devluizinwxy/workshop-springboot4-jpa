@@ -3,9 +3,10 @@ package com.educandoweb.demo.entities;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
 @Entity
 @Table(name = "tb_product")
 public class Product implements Serializable {
@@ -18,22 +19,23 @@ public class Product implements Serializable {
     private Double price;
     private String imgUrl;
 
-
-
-
-
-    private List<Category> categories = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "tb_product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
 
     public Product() {
     }
 
-    public Product(Long id, String name, String description, Double price, String imgUrl, List<Category> categories) {
+    public Product(Long id, String name, String description, Double price, String imgUrl) {
         this.id = id;
         this.name = name;
-        Description = description;
+        this.Description = description;
         this.price = price;
         this.imgUrl = imgUrl;
-        this.categories = categories;
     }
 
     public Long getId() {
@@ -56,7 +58,7 @@ public class Product implements Serializable {
         return imgUrl;
     }
 
-    public List<Category> getCategories() {
+    public Set<Category> getCategories() {
         return categories;
     }
 

@@ -1,11 +1,10 @@
 package com.educandoweb.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_category")
@@ -15,19 +14,16 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private List<Product> products = new ArrayList<>();
+    @JsonIgnore
+    @ManyToMany(mappedBy = "categories")
+    private Set<Product> products = new HashSet<>();
 
     public Category() {
     }
 
-    public Category(Long id, String name, List<Product> products) {
+    public Category(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.products = products;
-    }
-
-    public List<Product> getProducts() {
-        return products;
     }
 
     public Long getId() {
@@ -44,6 +40,10 @@ public class Category implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
     }
 
     @Override
