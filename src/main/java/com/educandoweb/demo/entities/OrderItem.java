@@ -63,7 +63,9 @@ public class OrderItem implements Serializable {
     public Product getProduct() {
         return id.getProduct();
     }
-
+    public Double subtotal(){
+        return price * quantity;
+    }
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
