@@ -4,6 +4,7 @@ import com.educandoweb.demo.entities.User;
 import com.educandoweb.demo.repositories.UserRepository;
 import com.educandoweb.demo.service.exceptions.DatabaseException;
 import com.educandoweb.demo.service.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,35 +18,40 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> findAll(){
-       return userRepository.findAll();
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
-    public User findById(Long id){
+    public User findById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-         return optionalUser.orElseThrow(() -> new ResourceNotFoundException(id));
+        return optionalUser.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
-    public User insert (User user){
+    public User insert(User user) {
         return userRepository.save(user);
     }
-    public void delete(Long id){
-        if(!userRepository.existsById(id)){
+
+    public void delete(Long id) {
+        if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException(id);
         }
 
         try {
             userRepository.deleteById(id);
-        }
-        catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(e.getMessage());
         }
 
     }
-    public User update(Long id, User obj ){
-        User user = userRepository.getReferenceById(id);
-        updateData(user,obj);
-        return userRepository.save(user);
+
+    public User update(Long id, User obj) {
+        try {
+            User user = userRepository.getReferenceById(id);
+            updateData(user, obj);
+            return userRepository.save(user);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     private void updateData(User entity, User obj) {
