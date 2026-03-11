@@ -2,11 +2,11 @@ package com.educandoweb.demo.service;
 
 import com.educandoweb.demo.entities.User;
 import com.educandoweb.demo.repositories.UserRepository;
+import com.educandoweb.demo.service.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,15 +19,15 @@ public class UserService {
        return userRepository.findAll();
     }
 
-    public User findById(long id){
+    public User findById(Long id){
         Optional<User> optionalUser = userRepository.findById(id);
-         return optionalUser.get();
+         return optionalUser.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public User insert (User user){
         return userRepository.save(user);
     }
-    public void delete(long id){
+    public void delete(Long id){
         try {
             userRepository.deleteById(id);
         }
@@ -36,5 +36,18 @@ public class UserService {
         }
 
     }
+    public User update(Long id, User obj ){
+        User user = userRepository.getReferenceById(id);
+        updateData(user,obj);
+        return userRepository.save(user);
+    }
+
+    private void updateData(User entity, User obj) {
+        entity.setName(obj.getName());
+        entity.setEmail(obj.getEmail());
+        entity.setPhone(obj.getPhone());
+
+    }
+
 
 }
