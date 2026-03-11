@@ -2,8 +2,10 @@ package com.educandoweb.demo.service;
 
 import com.educandoweb.demo.entities.User;
 import com.educandoweb.demo.repositories.UserRepository;
+import com.educandoweb.demo.service.exceptions.DatabaseException;
 import com.educandoweb.demo.service.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +30,15 @@ public class UserService {
         return userRepository.save(user);
     }
     public void delete(Long id){
+        if(!userRepository.existsById(id)){
+            throw new ResourceNotFoundException(id);
+        }
+
         try {
             userRepository.deleteById(id);
         }
-        catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException("User not found");
+        catch (DataIntegrityViolationException e){
+            throw new DatabaseException(e.getMessage());
         }
 
     }
